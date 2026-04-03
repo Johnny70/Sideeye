@@ -1,0 +1,690 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sideeye</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      background: #0B0B0B;
+      color: #EAEAEA;
+      min-height: 100vh;
+      padding: 0 24px;
+    }
+
+    a { color: #EAEAEA; }
+    a:hover { color: #888888; }
+
+    /* ── Layout ── */
+    .page {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 48px 0 48px;
+    }
+
+    .site-name {
+      font-size: 14px;
+      color: #888888;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .site-nav {
+      font-size: 14px;
+      color: #888888;
+      display: flex;
+      gap: 24px;
+    }
+
+    .site-nav a {
+      color: #888888;
+      text-decoration: none;
+    }
+
+    .site-nav a:hover { color: #EAEAEA; }
+    .site-nav a.active { color: #EAEAEA; }
+
+    /* ── Title block ── */
+    .title-block {
+      margin-bottom: 48px;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #888888;
+      margin-bottom: 24px;
+    }
+
+    /* ── Meta row ── */
+    .meta-row {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 48px;
+    }
+
+    /* ── Controls ── */
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+
+    select {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 6px 10px;
+      background: #111111;
+      border: 1px solid #222222;
+      color: #EAEAEA;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    select:focus { outline: none; border-color: #444444; }
+
+    button {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 5px 12px;
+      background: transparent;
+      border: 1px solid #2a2a2a;
+      color: #888888;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    button:hover { border-color: #555555; color: #EAEAEA; }
+    button:disabled { opacity: 0.3; cursor: default; }
+
+    button.run {
+      border-color: #444444;
+      color: #EAEAEA;
+    }
+
+    .status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      margin-left: 8px;
+    }
+
+    .status.loading { color: #888888; }
+    .status.ok      { color: #EAEAEA; }
+    .status.error   { color: #888888; }
+
+    /* ── Stats ── */
+    .stats {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      margin-bottom: 32px;
+      display: none;
+    }
+
+    /* ── Feed errors ── */
+    .error-block {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      background: #111111;
+      border: 1px solid #222222;
+      border-radius: 3px;
+      padding: 16px;
+      margin-bottom: 32px;
+      display: none;
+    }
+
+    .error-block-title {
+      color: #888888;
+      margin-bottom: 8px;
+    }
+
+    .error-block ul {
+      padding-left: 1rem;
+      color: #666666;
+    }
+
+    /* ── Articles ── */
+    .articles { display: flex; flex-direction: column; }
+
+    .article {
+      padding: 24px 0;
+      border-bottom: 1px solid #161616;
+    }
+
+    .article:first-child { border-top: 1px solid #161616; }
+
+    .article-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      margin-bottom: 8px;
+      display: flex;
+      gap: 16px;
+    }
+
+    .article-title {
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+
+    .article-title a {
+      text-decoration: none;
+      color: #EAEAEA;
+    }
+
+    .article-title a:hover { color: #888888; }
+
+    .article-summary {
+      font-size: 14px;
+      color: #888888;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .empty {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      padding: 32px 0;
+    }
+
+    /* ── Article score ── */
+    .article-score {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333333;
+    }
+
+    /* ── AI comment ── */
+    .comment-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333333;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .comment-btn:hover { color: #888888; }
+    .comment-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .regen-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333333;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .regen-btn:hover { color: #888888; }
+    .regen-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .bluesky-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333333;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.1s;
+    }
+
+    .bluesky-btn:hover { color: #888888; }
+    .bluesky-btn:disabled { opacity: 0.4; cursor: default; }
+    .bluesky-btn.posted { color: #1185fe; cursor: default; }
+
+    .article-comment {
+      margin-top: 8px;
+      font-size: 13px;
+      color: #888888;
+      font-style: italic;
+      border-left: 2px solid #222222;
+      padding-left: 10px;
+      line-height: 1.5;
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 48px;
+      padding-bottom: 48px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      border-top: 1px solid #161616;
+      padding-top: 24px;
+    }
+
+    /* ── First-run banner ── */
+    .setup-banner {
+      display: none;
+      border: 1px solid #2a2a2a;
+      border-left: 3px solid #555555;
+      background: #111111;
+      padding: 16px 20px;
+      margin-bottom: 32px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #AAAAAA;
+      position: relative;
+    }
+
+    .setup-banner strong { color: #EAEAEA; }
+
+    .setup-banner ol {
+      padding-left: 18px;
+      margin-top: 8px;
+    }
+
+    .setup-banner a { color: #AAAAAA; }
+    .setup-banner a:hover { color: #EAEAEA; }
+
+    .setup-banner-close {
+      position: absolute;
+      top: 10px;
+      right: 14px;
+      background: none;
+      border: none;
+      color: #444444;
+      font-size: 16px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+    }
+
+    .setup-banner-close:hover { color: #888888; }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="site-name">Sideeye</div>
+    <nav class="site-nav">
+      <a href="#">Feed</a>
+      <a href="/static/interests.html">Interests</a>
+      <a href="/static/settings.html">Settings</a>
+    </nav>
+  </header>
+
+  <div class="title-block">
+    <h1>News Monitor</h1>
+    <p class="subtitle">Pulls RSS feeds, scores articles against your interests, comments on them with AI, and posts the best ones to Bluesky — so you only read what matters.</p>
+  </div>
+
+  <div class="meta-row">
+    <span>Type: RSS aggregator</span>
+    <span>Status: active</span>
+    <span>Scope: world news</span>
+  </div>
+
+  <div class="controls">
+    <select id="feedSelect">
+      <option value="">all feeds</option>
+    </select>
+    <span class="status" id="status">connecting…</span>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="setup-banner" id="setupBanner">
+    <button class="setup-banner-close" onclick="dismissSetupBanner()" title="Dismiss">×</button>
+    <strong>First run — default config created.</strong>
+    <ol>
+      <li>Go to <a href="/static/interests.html">Interests</a> and add topics you care about with a score 1–10.</li>
+      <li>Add your RSS feeds by editing <code>feeds.json</code> (see <code>feeds.example.json</code> for format).</li>
+      <li>Optionally tweak the AI prompt on the <a href="/static/settings.html">Settings</a> page.</li>
+      <li>Reload this page — articles will be scored against your interests.</li>
+    </ol>
+  </div>
+
+  <div class="error-block" id="errorBox">
+    <div class="error-block-title">feed errors</div>
+    <ul id="errorList"></ul>
+  </div>
+
+  <div class="articles" id="articles">
+    <div class="empty">Waiting for data…</div>
+  </div>
+
+  <footer>
+    Sideeye
+  </footer>
+
+</div>
+<script>
+  // ── State ────────────────────────────────────────────────────────────────
+  let _allData      = null;
+  let _countdownId  = null;
+  const POLL_SEC    = 300;
+  const _commentCache = {};  // keyed by article.link → comment text
+
+  // ── First-run banner ──────────────────────────────────────────────────────
+  function showSetupBanner() {
+    if (localStorage.getItem('sideeye_setup_seen')) return;
+    document.getElementById('setupBanner').style.display = 'block';
+  }
+
+  function dismissSetupBanner() {
+    document.getElementById('setupBanner').style.display = 'none';
+    localStorage.setItem('sideeye_setup_seen', '1');
+  }
+
+  // ── SSE connection ───────────────────────────────────────────────────────
+  function connect() {
+    setStatus('loading', 'connecting…');
+    const es = new EventSource('/stream');
+
+    es.onopen = () => setStatus('ok', 'live');
+
+    es.onmessage = (e) => {
+      try {
+        const data = JSON.parse(e.data);
+        _allData = data;
+        populateFeedDropdown(data.articles || []);
+        applyFilterAndRender();
+        const updated = data.updated_at ? formatDate(data.updated_at) : '—';
+        startCountdown(updated);
+        if (data.first_run) showSetupBanner();
+      } catch (err) {
+        console.error('Parse error:', err);
+      }
+    };
+
+    es.onerror = () => {
+      setStatus('error', 'connection lost — retrying…');
+      es.close();
+      setTimeout(connect, 5000);
+    };
+  }
+
+  // ── Feed dropdown (populate once, preserve selection) ────────────────────
+  function populateFeedDropdown(articles) {
+    const sel = document.getElementById('feedSelect');
+    const current = sel.value;
+    const names = [...new Set(articles.map(a => a.feed_name))].sort();
+
+    const existing = [...sel.options].slice(1).map(o => o.value);
+    if (JSON.stringify(existing) === JSON.stringify(names)) return;
+
+    sel.innerHTML = '<option value="">all feeds</option>';
+    names.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = opt.textContent = name;
+      sel.appendChild(opt);
+    });
+    sel.value = names.includes(current) ? current : '';
+  }
+
+  // ── Filter & render ──────────────────────────────────────────────────────
+  function applyFilterAndRender() {
+    if (!_allData) return;
+    const filter = document.getElementById('feedSelect').value;
+
+    const articles = filter
+      ? _allData.articles.filter(a => a.feed_name === filter)
+      : _allData.articles;
+
+    renderArticles({
+      total:   articles.length,
+      errors:  _allData.errors,
+      articles,
+    });
+  }
+
+  function renderArticles(data) {
+    const container = document.getElementById('articles');
+    const errorBox  = document.getElementById('errorBox');
+    const stats     = document.getElementById('stats');
+
+    const feedNames = new Set((data.articles || []).map(a => a.feed_name));
+    const filteredNote = data.filtered > 0 ? `  ·  ${data.filtered} filtered` : '';
+    stats.textContent = `${data.total ?? 0} articles  ·  ${feedNames.size} feeds${filteredNote}`;
+    stats.style.display = 'block';
+
+    if (data.errors && data.errors.length > 0) {
+      document.getElementById('errorList').innerHTML = data.errors
+        .map(e => `<li>${escHtml(e.feed)}: ${escHtml(e.error)}</li>`)
+        .join('');
+      errorBox.style.display = 'block';
+    } else {
+      errorBox.style.display = 'none';
+    }
+
+    const articles = data.articles || [];
+    if (articles.length === 0) {
+      container.innerHTML = '<div class="empty">No articles found.</div>';
+      return;
+    }
+
+    container.innerHTML = articles.map((a, i) => `
+      <div class="article" id="article-${i}">
+        <div class="article-meta">
+          <span>${escHtml(a.feed_name)}</span>
+          <span>${formatDate(a.published_at)}</span>
+          <span class="article-score">${a.score ?? 0}</span>
+          <button class="comment-btn" title="AI comment" onclick="fetchComment(${i}, this)">♥ comment</button>
+          <button class="regen-btn" id="regen-${i}" title="New comment" onclick="regenComment(${i}, this)" style="display:none">↺</button>
+          <button class="bluesky-btn" title="Post to Bluesky" onclick="postToBluesky(${i}, this)">☁ bluesky</button>
+        </div>
+        <div class="article-title">
+          <a href="${a.link}" target="_blank" rel="noopener">${escHtml(a.title)}</a>
+        </div>
+        ${a.summary ? `<div class="article-summary">${escHtml(stripHtml(a.summary))}</div>` : ''}
+        <div class="article-comment" id="comment-${i}" style="display:none"></div>
+      </div>
+    `).join('');
+
+    // Store articles for comment fetching
+    window._articles = articles;
+
+    // Restore cached comments and auto-comment uncached articles with score > 40
+    articles.forEach((a, i) => {
+      const cached = _commentCache[a.link];
+      if (cached) {
+        const commentEl = document.getElementById(`comment-${i}`);
+        const btn = document.querySelector(`#article-${i} .comment-btn`);
+        const regen = document.getElementById(`regen-${i}`);
+        commentEl.textContent = cached;
+        commentEl.style.display = 'block';
+        if (btn) btn.textContent = '♥ hide';
+        if (regen) regen.style.display = 'inline';
+      } else if ((a.score ?? 0) > 40) {
+        const btn = document.querySelector(`#article-${i} .comment-btn`);
+        if (btn) fetchComment(i, btn);
+      }
+    });
+  }
+
+  // ── Bluesky ────────────────────────────────────────────────────────────
+  async function postToBluesky(index, btn) {
+    const article = (window._articles || [])[index];
+    if (!article) return;
+
+    const commentEl = document.getElementById(`comment-${index}`);
+    const comment   = commentEl && commentEl.style.display !== 'none' ? commentEl.textContent : '';
+
+    btn.disabled = true;
+    btn.textContent = 'posting…';
+
+    try {
+      const res = await fetch('/bluesky/post', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ title: article.title, link: article.link, comment }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+      }
+      btn.textContent = '✓ posted';
+      btn.classList.add('posted');
+    } catch (e) {
+      btn.textContent = '☁ bluesky';
+      btn.disabled = false;
+      alert(`Bluesky-fel: ${e.message}`);
+    }
+  }
+
+  // ── AI comment ────────────────────────────────────────────────────────────
+  async function fetchComment(index, btn) {
+    const article = (window._articles || [])[index];
+    if (!article) return;
+
+    const commentEl = document.getElementById(`comment-${index}`);
+
+    // Toggle off if already showing
+    if (commentEl.style.display !== 'none') {
+      commentEl.style.display = 'none';
+      btn.textContent = '♥ comment';
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = 'thinking…';
+
+    try {
+      const res = await fetch('/comment', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ title: article.title, summary: article.summary || '' }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+      }
+      const data = await res.json();
+      _commentCache[article.link] = data.comment;
+      commentEl.textContent = data.comment;
+      commentEl.style.display = 'block';
+      btn.textContent = '♥ hide';
+      const regen = document.getElementById(`regen-${index}`);
+      if (regen) regen.style.display = 'inline';
+    } catch (e) {
+      commentEl.textContent = `⚠ ${e.message}`;
+      commentEl.style.display = 'block';
+      btn.textContent = '♥ comment';
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // ── Helpers ──────────────────────────────────────────────────────────────
+  async function regenComment(index, btn) {
+    const article = (window._articles || [])[index];
+    if (!article) return;
+
+    const commentEl = document.getElementById(`comment-${index}`);
+    const commentBtn = document.querySelector(`#article-${index} .comment-btn`);
+
+    btn.disabled = true;
+    btn.textContent = '…';
+
+    try {
+      const res = await fetch('/comment', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ title: article.title, summary: article.summary || '' }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+      }
+      const data = await res.json();
+      _commentCache[article.link] = data.comment;
+      commentEl.textContent = data.comment;
+      commentEl.style.display = 'block';
+      if (commentBtn) commentBtn.textContent = '♥ hide';
+    } catch (e) {
+      alert(`Could not regenerate: ${e.message}`);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '↺';
+    }
+  }
+
+  function setStatus(type, msg) {
+    const el = document.getElementById('status');
+    el.className = `status ${type}`;
+    el.textContent = msg;
+  }
+
+  function formatDate(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleString('en-GB', {
+        day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
+      });
+    } catch { return iso; }
+  }
+
+  function escHtml(str) {
+    return (str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function stripHtml(str) {
+    return (str ?? '').replace(/<[^>]*>/g, '');
+  }
+
+  // ── Countdown ────────────────────────────────────────────────────────────
+  function startCountdown(updatedLabel) {
+    if (_countdownId) clearInterval(_countdownId);
+    let remaining = POLL_SEC;
+
+    function tick() {
+      const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+      const s = String(remaining % 60).padStart(2, '0');
+      setStatus('ok', `updated ${updatedLabel}  ·  next in ${m}:${s}`);
+      if (remaining > 0) remaining--;
+    }
+
+    tick();
+    _countdownId = setInterval(tick, 1000);
+  }
+
+  // ── Init ─────────────────────────────────────────────────────────────────
+  document.getElementById('feedSelect').addEventListener('change', applyFilterAndRender);
+  connect();
+</script>
+</body>
+</html>

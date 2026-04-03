@@ -1,0 +1,42 @@
+# Secrets — never commit
+.env
+
+# User-specific config — set your own
+interests.json
+settings.json
+feeds.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Editor / OS
+.vscode/
+.idea/
+*.swp
+*.swo
+Thumbs.db
+.DS_Store
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+# Unimportant stuff
+docs/*

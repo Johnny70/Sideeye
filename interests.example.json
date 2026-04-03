@@ -1,0 +1,9 @@
+{
+    "interests": [
+        { "topic": "technology", "score": 8 },
+        { "topic": "science", "score": 7 },
+        { "topic": "economy", "score": 6 },
+        { "topic": "climate", "score": 5 },
+        { "topic": "world", "score": 4 }
+    ]
+}

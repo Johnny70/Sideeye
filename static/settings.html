@@ -1,0 +1,463 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sideeye — Settings</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      background: #0B0B0B;
+      color: #EAEAEA;
+      min-height: 100vh;
+      padding: 0 24px;
+    }
+
+    a { color: #EAEAEA; text-decoration: none; }
+    a:hover { color: #888888; }
+
+    .page { max-width: 720px; margin: 0 auto; }
+
+    header { padding: 48px 0; }
+
+    .site-name {
+      font-size: 14px;
+      color: #888888;
+      margin-bottom: 8px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .site-nav { font-size: 14px; color: #888888; display: flex; gap: 24px; }
+    .site-nav a { color: #888888; }
+    .site-nav a:hover { color: #EAEAEA; }
+    .site-nav a.active { color: #EAEAEA; }
+
+    .title-block { margin-bottom: 36px; }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: -0.02em;
+      margin-bottom: 12px;
+    }
+
+    .subtitle { font-size: 15px; color: #888888; }
+
+    /* â”€â”€ Tabs â”€â”€ */
+    .tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #1e1e1e;
+      margin-bottom: 36px;
+    }
+
+    .tab-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #444444;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      padding: 8px 20px 8px 0;
+      cursor: pointer;
+      margin-bottom: -1px;
+      letter-spacing: 0.04em;
+    }
+
+    .tab-btn:hover { color: #888888; }
+    .tab-btn.active { color: #EAEAEA; border-bottom-color: #EAEAEA; }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* â”€â”€ Form â”€â”€ */
+    .field { margin-bottom: 36px; }
+
+    label {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #444444;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 10px;
+    }
+
+    textarea {
+      width: 100%;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      background: #111111;
+      border: 1px solid #1e1e1e;
+      color: #EAEAEA;
+      padding: 12px 14px;
+      border-radius: 3px;
+      resize: vertical;
+      min-height: 180px;
+    }
+
+    textarea:focus { outline: none; border-color: #333333; }
+
+    /* â”€â”€ Temperature â”€â”€ */
+    .temp-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 2px;
+      background: #222222;
+      border-radius: 1px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #EAEAEA;
+      cursor: pointer;
+    }
+
+    .temp-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #EAEAEA;
+      width: 36px;
+      text-align: right;
+    }
+
+    .temp-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #333333;
+      margin-top: 6px;
+    }
+
+    /* â”€â”€ Toolbar â”€â”€ */
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    button {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 5px 12px;
+      background: transparent;
+      border: 1px solid #444444;
+      color: #EAEAEA;
+      cursor: pointer;
+      border-radius: 3px;
+    }
+
+    button:hover { border-color: #666666; }
+    button:disabled { opacity: 0.3; cursor: default; }
+
+    .save-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+    }
+
+    /* â”€â”€ Feed list â”€â”€ */
+    .feed-row {
+      display: grid;
+      grid-template-columns: 1fr 2fr 100px 28px;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .feed-row input[type="text"] {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      background: #111111;
+      border: 1px solid #1e1e1e;
+      color: #EAEAEA;
+      padding: 6px 10px;
+      border-radius: 3px;
+      width: 100%;
+    }
+
+    .feed-row input[type="text"]:focus { outline: none; border-color: #333333; }
+
+    .feed-col-header {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #444444;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      display: grid;
+      grid-template-columns: 1fr 2fr 100px 28px;
+      gap: 8px;
+    }
+
+    .feed-delete {
+      background: none;
+      border: none;
+      color: #2a2a2a;
+      cursor: pointer;
+      font-size: 14px;
+      padding: 0;
+      text-align: center;
+    }
+
+    .feed-delete:hover { color: #888888; border: none; }
+
+    /* â”€â”€ Footer â”€â”€ */
+    footer {
+      margin-top: 64px;
+      padding: 24px 0 48px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #888888;
+      border-top: 1px solid #161616;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="site-name">Sideeye</div>
+    <nav class="site-nav">
+      <a href="/static/index.html">Feed</a>
+      <a href="/static/interests.html">Interests</a>
+      <a href="/static/settings.html" class="active">Settings</a>
+    </nav>
+  </header>
+
+  <div class="title-block">
+    <h1>Settings</h1>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('ai', this)">AI</button>
+    <button class="tab-btn" onclick="switchTab('sources', this)">Sources</button>
+  </div>
+
+  <!-- â”€â”€ AI tab â”€â”€ -->
+  <div class="tab-panel active" id="tab-ai">
+    <div class="field">
+      <label>System prompt</label>
+      <textarea id="promptInput" spellcheck="false"></textarea>
+    </div>
+
+    <div class="field">
+      <label>Temperature â€” how creative / unpredictable the AI is</label>
+      <div class="temp-row">
+        <input type="range" id="tempSlider" min="0" max="2" step="0.05" value="0.85"
+               oninput="document.getElementById('tempValue').textContent = parseFloat(this.value).toFixed(2)">
+        <span class="temp-value" id="tempValue">0.85</span>
+      </div>
+      <div class="temp-labels">
+        <span>0 â€” deterministic</span>
+        <span>1 â€” balanced</span>
+        <span>2 â€” chaotic</span>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <button id="saveAiBtn" onclick="saveAi()">save</button>
+      <button onclick="resetAi()">reset to default</button>
+      <span class="save-status" id="aiStatus"></span>
+    </div>
+  </div>
+
+  <!-- â”€â”€ Sources tab â”€â”€ -->
+  <div class="tab-panel" id="tab-sources">
+    <div class="feed-col-header">
+      <span>Name</span>
+      <span>URL</span>
+      <span>Category</span>
+      <span></span>
+    </div>
+    <div id="feedList"></div>
+
+    <div class="toolbar" style="margin-top: 16px;">
+      <button onclick="addFeedRow()">+ add</button>
+      <button id="saveFeedsBtn" onclick="saveFeeds()">save</button>
+      <span class="save-status" id="feedsStatus"></span>
+    </div>
+  </div>
+
+  <footer>Sideeye / settings</footer>
+
+</div>
+<script>
+  const DEFAULT_PROMPT = "You are a dry-witted news commentator. Given a headline and summary, reply with a single sharp remark (1-2 sentences). Do not repeat the headline. No hashtags, no emojis, no quotation marks.";
+  const DEFAULT_TEMP   = 0.85;
+
+  // â”€â”€ Tabs â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function switchTab(name, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => { p.style.display = 'none'; });
+    btn.classList.add('active');
+    document.getElementById(`tab-${name}`).style.display = 'block';
+  }
+
+  // â”€â”€ AI tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  async function loadAi() {
+    try {
+      const res  = await fetch('/settings');
+      const data = await res.json();
+      document.getElementById('promptInput').value = data.system_prompt || DEFAULT_PROMPT;
+      const temp = parseFloat(data.temperature ?? DEFAULT_TEMP);
+      document.getElementById('tempSlider').value          = temp;
+      document.getElementById('tempValue').textContent     = temp.toFixed(2);
+    } catch (e) {
+      document.getElementById('aiStatus').textContent = `load error: ${e.message}`;
+    }
+  }
+
+  async function saveAi() {
+    const prompt = document.getElementById('promptInput').value.trim();
+    const temp   = parseFloat(document.getElementById('tempSlider').value);
+    const status = document.getElementById('aiStatus');
+    const btn    = document.getElementById('saveAiBtn');
+
+    if (!prompt) { status.textContent = 'prompt cannot be empty'; return; }
+
+    btn.disabled = true;
+    status.textContent = 'savingâ€¦';
+
+    try {
+      const res = await fetch('/settings', {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ system_prompt: prompt, temperature: temp }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+      }
+      status.textContent = 'saved';
+      setTimeout(() => { status.textContent = ''; }, 2000);
+    } catch (e) {
+      status.textContent = `error: ${e.message}`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  function resetAi() {
+    document.getElementById('promptInput').value         = DEFAULT_PROMPT;
+    document.getElementById('tempSlider').value          = DEFAULT_TEMP;
+    document.getElementById('tempValue').textContent     = DEFAULT_TEMP.toFixed(2);
+  }
+
+  // â”€â”€ Sources tab â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  function makeFeedRow(name = '', url = '', category = 'world') {
+    const row = document.createElement('div');
+    row.className = 'feed-row';
+    row.innerHTML = `
+      <input type="text" placeholder="BBC World News"   value="${escHtml(name)}"     class="feed-name">
+      <input type="text" placeholder="https://â€¦/rss"   value="${escHtml(url)}"      class="feed-url">
+      <input type="text" placeholder="world"            value="${escHtml(category)}" class="feed-cat">
+      <button class="feed-delete" title="remove" onclick="this.closest('.feed-row').remove()">âœ•</button>
+    `;
+    return row;
+  }
+
+  function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  async function loadFeeds() {
+    try {
+      const res   = await fetch('/feeds');
+      const feeds = await res.json();
+      const list  = document.getElementById('feedList');
+      list.innerHTML = '';
+      feeds.forEach(f => list.appendChild(makeFeedRow(f.name, f.url, f.category)));
+    } catch (e) {
+      document.getElementById('feedsStatus').textContent = `load error: ${e.message}`;
+    }
+  }
+
+  function addFeedRow() {
+    document.getElementById('feedList').appendChild(makeFeedRow());
+  }
+
+  async function saveFeeds() {
+    const rows  = document.querySelectorAll('.feed-row');
+    const feeds = [];
+    let valid   = true;
+
+    rows.forEach(row => {
+      const name     = row.querySelector('.feed-name').value.trim();
+      const url      = row.querySelector('.feed-url').value.trim();
+      const category = row.querySelector('.feed-cat').value.trim() || 'world';
+      if (name && url) {
+        feeds.push({ name, url, category });
+      } else if (name || url) {
+        valid = false;
+      }
+    });
+
+    const status = document.getElementById('feedsStatus');
+    const btn    = document.getElementById('saveFeedsBtn');
+
+    if (!valid) { status.textContent = 'fill in both name and URL for each row'; return; }
+    if (feeds.length === 0) { status.textContent = 'add at least one feed'; return; }
+
+    btn.disabled = true;
+    status.textContent = 'savingâ€¦';
+
+    try {
+      const res = await fetch('/feeds', {
+        method:  'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(feeds),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(err.detail || res.statusText);
+      }
+      status.textContent = 'saved â€” fetching new feedsâ€¦';
+      setTimeout(() => { status.textContent = ''; }, 3000);
+    } catch (e) {
+      status.textContent = `error: ${e.message}`;
+    } finally {
+      btn.disabled = false;
+    }
+  }
+
+  // â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      const aiActive = document.getElementById('tab-ai').classList.contains('active');
+      if (aiActive) saveAi(); else saveFeeds();
+    }
+  });
+
+  loadAi();
+  loadFeeds();
+
+  // Set initial panel visibility explicitly via inline styles
+  document.querySelectorAll('.tab-panel').forEach(p => { p.style.display = 'none'; });
+  document.getElementById('tab-ai').style.display = 'block';
+</script>
+</body>
+</html>
